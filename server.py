@@ -25,7 +25,6 @@ def connect(conn, addr):
 			print(message)
 			#print(f"{line}\nThe client {addr[0]} is sending the message:\"{data.decode()}\" to all the users that are available.\n")
 			store(Users)
-			conn.send(("Done").encode())
 		else:
 			#del Users[conn]
 			remove(conn)
@@ -35,9 +34,9 @@ def broadcast(message, conn):
 	for user in list(Users.keys()):
 		if user != conn:
 			try:
-				user.send(message)
+				user.send(message.encode())
 			except:
-				user.close()
+				#user.close()
 				del Users[user]
 
 # remove the user
@@ -54,7 +53,6 @@ def cre_table():
 	cur = connection.cursor()
 	cur.execute('CREATE TABLE Users(ClientNum INTEGER PRIMARY KEY AUTOINCREMENT, IP TEXT, Port INTEGER)')
 	cur.execute('INSERT INTO Users VALUES ((SELECT MAX(ClientNum) + 1 FROM Users),"127.0.0.1", 1234)')
-
 	
 	connection.commit()
 	connection.close()
@@ -65,8 +63,10 @@ def store(Users):
 	cur = connection.cursor()
 
 	find = False
+	print("\n---------------------------")
 	for user in Users.values():
 		for row in cur.execute(f'SELECT * FROM Users'):
+			print(row)
 			if(list(row[-2:]) == [str(user[0]), int(user[1])]):
 				find = True
 				break
@@ -74,7 +74,7 @@ def store(Users):
 				continue
 		if(not find):
 			cur.execute(f'INSERT INTO Users VALUES ((SELECT MAX(ClientNum) + 1 FROM Users),"{str(user[0])}", {int(user[1])})')
-
+	print("---------------------------\n")
 	connection.commit()
 	connection.close()
 
