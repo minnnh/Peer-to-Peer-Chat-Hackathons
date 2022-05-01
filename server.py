@@ -172,4 +172,3 @@ class P2PServer(socketserver.BaseRequestHandler):
 
 # conn.close()
 # s.close()
-

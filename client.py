@@ -193,7 +193,3 @@ class Client:
 # 		listenThr.start()
 # 	except:
 # 		print("pending.......")
-
-
-
-
